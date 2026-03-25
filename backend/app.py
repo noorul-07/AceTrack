@@ -2,12 +2,13 @@ import os
 import requests
 import tempfile
 import time
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from supabase import create_client, Client
 from google import genai 
 import json
 import re
+FRONTEND_FOLDER = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend'))
 
 app = Flask(__name__)
 CORS(app)
@@ -26,6 +27,10 @@ gemini_file_cache = {}
 # ==========================================
 # 1. CORE AI ENGINES
 # ==========================================
+@app.route('/')
+def serve_index():
+    """Serves your index.html file when someone visits the root URL"""
+    return send_from_directory(app.static_folder, 'index.html')
 
 def get_or_upload_gemini_file(lesson_name):
     """(Used only once per chapter) Uploads the raw PDF to Gemini."""

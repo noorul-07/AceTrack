@@ -230,13 +230,13 @@ def evaluate_concept():
             Source Chapter Text:
             {lesson_text}
 
-            You are a highly encouraging TN State Board tutor. The student was asked to defend their understanding of '{concept}' based on these questions:\n{ai_questions}\n\nHere is their initial answer: {student_answer}\n\nEvaluate their understanding based strictly on the text. If they are right, praise them. If there are inaccuracies, explain the concept practically using real-world examples. Use LaTeX ($) for math. End by asking if they have any doubts or need clarification."""
+            You are a highly encouraging TN State Board tutor. The student was asked to defend their understanding of '{concept}' based on these questions:\n{ai_questions}\n\nHere is their initial answer: {student_answer}\n\nEvaluate their understanding based strictly on the text. If they are right, praise them. If there are inaccuracies, explain the concept practically using real-world examples. Use LaTeX ($) for math. End by asking if they have any doubts or need clarification. Ensure all LaTeX backslashes are properly formatted"""
         else:
             prompt = f"""
             Source Chapter Text:
             {lesson_text}
 
-            You are a TN State Board tutor explaining the concept '{concept}' using the text.\n\nHere is the conversation so far:\n{chat_history}\n\nStudent's new question/reply: {student_answer}\n\nAnswer their question clearly, practically, and conversationally. Use LaTeX ($) for math. Keep it highly relevant to the text."""
+            You are a TN State Board tutor explaining the concept '{concept}' using the text.\n\nHere is the conversation so far:\n{chat_history}\n\nStudent's new question/reply: {student_answer}\n\nAnswer their question clearly, practically, and conversationally. Use LaTeX ($) for math. Keep it highly relevant to the text. Ensure all LaTeX backslashes are properly formatted"""
 
         evaluation = generate_text_only(prompt)
         

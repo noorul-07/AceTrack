@@ -16,7 +16,7 @@ CORS(app)
 # --- CONFIGURATION ---
 SUPABASE_URL = "https://gjjgrzqjyqnphkrntspf.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdqamdyenFqeXFucGhrcm50c3BmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNDU1MDksImV4cCI6MjA4OTkyMTUwOX0.sDysEzrCl5YSvCzFbkFrOhunOA5jmpGeyejm0xnIm9A"
-GEMINI_API_KEY = "AIzaSyAMmxrWngDwKitFgdA-5VMuPzmnMg07Sjg"
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 client = genai.Client(api_key=GEMINI_API_KEY)

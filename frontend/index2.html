@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AceTrack by Paalam - TN State Board Gamified Learning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        background: '#13141c',
+                        surface: '#1e202e',
+                        surfaceLight: '#2a2d3e',
+                        primary: '#6366f1',
+                        primaryHover: '#4f46e5',
+                        accent: '#8b5cf6'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            startup: { typeset: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* Custom Dark Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #13141c; }
+        ::-webkit-scrollbar-thumb { background: #2a2d3e; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+        
+        /* Select Dropdown Dark Mode Fix */
+        select option { background-color: #1e202e; color: white; }
+    </style>
+</head>
+<body class="bg-background text-slate-200 font-sans min-h-screen flex overflow-x-hidden selection:bg-primary selection:text-white">
+
+    <section id="auth-section" class="flex flex-col items-center justify-center min-h-screen w-full p-4 relative z-50 bg-background">
+        <img src="logo.jpeg" alt="AceTrack Logo" class="w-32 h-32 object-cover rounded-3xl shadow-2xl shadow-primary/20 mb-8 border border-surfaceLight">
+        
+        <div class="bg-surface p-8 rounded-3xl shadow-2xl w-full max-w-md border border-surfaceLight">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-extrabold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent tracking-tight">AceTrack</h1>
+                <p class="text-slate-400 text-sm mt-2 font-medium tracking-widest uppercase">Team Paalam</p>
+            </div>
+            <h2 class="text-xl font-bold mb-6 text-center text-white" id="auth-title">Login to Play</h2>
+            <div class="space-y-4">
+                <input type="email" id="email" placeholder="Email Address" class="w-full p-4 bg-[#13141c] border border-surfaceLight rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-white transition-all placeholder-slate-500">
+                <input type="password" id="password" placeholder="Password" class="w-full p-4 bg-[#13141c] border border-surfaceLight rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-white transition-all placeholder-slate-500">
+                
+                <button id="login-btn" class="w-full bg-gradient-to-r from-primary to-accent text-white font-black tracking-widest py-4 rounded-xl hover:opacity-90 shadow-lg shadow-primary/25 transition-all active:scale-95">LOGIN</button>
+                <button id="signup-btn" class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black tracking-widest py-4 rounded-xl hover:opacity-90 shadow-lg shadow-emerald-500/25 transition-all active:scale-95 hidden">CREATE ACCOUNT</button>
+            </div>
+            <p class="text-center mt-8 text-sm text-slate-400">
+                <span id="toggle-auth-text">Don't have an account?</span> 
+                <button id="toggle-auth-mode" class="text-primary font-bold hover:text-accent transition-colors ml-1">Sign up</button>
+            </p>
+            <p id="auth-error" class="text-red-400 text-center mt-4 text-xs font-bold hidden bg-red-950/30 border border-red-900/50 p-3 rounded-xl"></p>
+        </div>
+    </section>
+
+    <section id="dashboard-section" class="hidden w-full flex-row min-h-screen fade-in">
+        
+        <aside class="w-64 bg-surface border-r border-surfaceLight hidden md:flex flex-col justify-between h-screen sticky top-0">
+            <div>
+                <div class="p-6 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center font-black text-white text-xl shadow-lg shadow-primary/20">P</div>
+                    <span class="font-black text-xl tracking-widest text-white">PAALAM</span>
+                </div>
+                
+                <nav class="px-4 space-y-2 mt-4">
+                    <a href="#" class="flex items-center gap-3 bg-surfaceLight/50 text-white px-4 py-3 rounded-xl font-bold border border-surfaceLight transition-colors">
+                        <span class="opacity-70">🏠</span> Dashboard
+                    </a>
+                    <a href="#" class="flex items-center gap-3 text-slate-400 hover:text-white hover:bg-surfaceLight/30 px-4 py-3 rounded-xl font-medium transition-colors">
+                        <span class="opacity-70">⚔️</span> 1v1 Battles
+                    </a>
+                    <a href="#" class="flex items-center gap-3 text-slate-400 hover:text-white hover:bg-surfaceLight/30 px-4 py-3 rounded-xl font-medium transition-colors">
+                        <span class="opacity-70">🧠</span> Concept Correction
+                    </a>
+                    <a href="#" class="flex items-center gap-3 text-slate-400 hover:text-white hover:bg-surfaceLight/30 px-4 py-3 rounded-xl font-medium transition-colors opacity-50 cursor-not-allowed">
+                        <span class="opacity-70">📚</span> PYQ Access <span class="ml-auto text-xs">🔒</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 text-slate-400 hover:text-white hover:bg-surfaceLight/30 px-4 py-3 rounded-xl font-medium transition-colors">
+                        <span class="opacity-70">🏆</span> Leaderboard
+                    </a>
+                </nav>
+            </div>
+
+            <div class="p-6 border-t border-surfaceLight">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div id="user-display-email" class="text-sm font-bold text-white truncate max-w-[140px]">Student</div>
+                        <div class="text-[10px] text-primary font-black uppercase tracking-widest mt-1">Rating: 1250</div>
+                    </div>
+                    <button id="logout-btn" class="p-2 hover:bg-red-500/10 text-slate-400 hover:text-red-400 rounded-lg transition-colors" title="Logout">
+                        🚪
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col min-h-screen overflow-y-auto">
+            
+            <header class="h-20 bg-background/80 backdrop-blur-md border-b border-surfaceLight sticky top-0 z-40 flex items-center justify-between px-8">
+                <div class="flex-1 max-w-md">
+                    <div class="relative">
+                        <span class="absolute left-4 top-3 opacity-50">🔍</span>
+                        <input type="text" placeholder="Search subjects, topics..." class="w-full bg-surface border border-surfaceLight text-slate-300 text-sm rounded-full py-3 pl-12 pr-4 focus:outline-none focus:border-primary transition-colors">
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="bg-red-500/10 text-red-400 border border-red-500/20 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2">
+                        🔥 4 Day Streak
+                    </div>
+                    <button class="w-10 h-10 bg-surface border border-surfaceLight rounded-full flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+                        ❄️
+                    </button>
+                </div>
+            </header>
+
+            <div class="p-8 max-w-7xl mx-auto w-full space-y-8">
+                
+                <div class="bg-gradient-to-r from-[#1e1b4b] to-[#4c1d95] rounded-3xl p-10 relative overflow-hidden border border-indigo-500/30 shadow-2xl shadow-indigo-900/20">
+                    <div class="relative z-10 max-w-xl">
+                        <div class="bg-blue-500/20 border border-blue-400/30 text-blue-300 text-xs font-black px-3 py-1 rounded-full inline-flex items-center gap-2 mb-6 tracking-widest uppercase">
+                            ⚡ Season 2 is Live!
+                        </div>
+                        <h1 class="text-5xl font-black text-white leading-tight mb-4">Level Up Your<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Board Exam Prep</span></h1>
+                        <p class="text-indigo-200 text-base mb-8 font-medium">Challenge friends, conquer topics, and master concepts through interactive 1v1 battles and AI-powered speech correction.</p>
+                        <div class="flex gap-4">
+                            <button class="bg-white text-indigo-900 font-black px-8 py-3 rounded-xl hover:scale-105 transition-transform">▶ Find Match</button>
+                            <button class="bg-indigo-900/50 text-white font-bold border border-indigo-400/30 px-8 py-3 rounded-xl hover:bg-indigo-800/50 transition-colors">Practice Solo</button>
+                        </div>
+                    </div>
+                    <div class="absolute right-0 top-0 bottom-0 w-1/3 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxjaXJjbGUgY3g9IjgwJSIgY3k9IjUwJSIgcj0iNDAlIiBmaWxsPSJyZ2JhKDEzOSwgOTIsIDI0NiwgMC4yKSIgZmlsdGVyPSJibHVyKDEwMHB4KSIvPjwvc3ZnPg==')] opacity-50 mix-blend-screen pointer-events-none"></div>
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <span class="text-red-400 animate-pulse text-xl">⚔️</span>
+                            <h2 class="text-2xl font-black text-white">1v1 Knowledge Battles</h2>
+                        </div>
+                        <div class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 1,248 Online
+                        </div>
+                    </div>
+                    <p class="text-slate-400 text-sm mb-6">Select your arena and find an opponent</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        
+                        <div class="bg-surface rounded-3xl p-6 border border-surfaceLight flex flex-col h-full">
+                            <h3 class="text-white font-bold mb-4">1. Choose Subject</h3>
+                            <div class="space-y-3 flex-grow">
+                                <label class="w-full relative block cursor-pointer">
+                                    <select id="lobby-subject" class="w-full appearance-none bg-[#13141c] border-2 border-surfaceLight text-white font-bold rounded-2xl p-4 focus:outline-none focus:border-primary transition-colors cursor-pointer">
+                                        <option value="">-- Select Subject --</option>
+                                        <option value="Physics">⚛️ Physics</option>
+                                        <option value="Chemistry">🧪 Chemistry</option>
+                                        <option value="Maths">📐 Mathematics</option>
+                                    </select>
+                                    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">▼</div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="bg-surface rounded-3xl p-6 border border-surfaceLight flex flex-col h-full">
+                            <h3 class="text-white font-bold mb-4">2. Select Topic</h3>
+                            <div class="space-y-4 flex-grow">
+                                <label class="w-full relative block">
+                                    <select id="lobby-chapter" class="w-full appearance-none bg-[#13141c] border-2 border-surfaceLight text-white font-semibold text-sm rounded-xl p-3 focus:outline-none focus:border-primary transition-colors disabled:opacity-50" disabled>
+                                        <option value="">Choose subject first</option>
+                                    </select>
+                                    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500 text-xs">▼</div>
+                                </label>
+                                
+                                <label class="w-full relative block">
+                                    <select id="lobby-concept" class="w-full appearance-none bg-[#13141c] border-2 border-surfaceLight text-white font-semibold text-sm rounded-xl p-3 focus:outline-none focus:border-primary transition-colors disabled:opacity-50" disabled>
+                                        <option value="">Choose chapter first</option>
+                                    </select>
+                                    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500 text-xs">▼</div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="bg-surfaceLight/30 rounded-3xl p-6 border border-surfaceLight flex flex-col items-center justify-center text-center relative overflow-hidden h-full">
+                            <div class="w-20 h-20 rounded-full border-4 border-dashed border-slate-600 flex items-center justify-center mb-4 opacity-50">
+                                <span class="text-2xl">⚔️</span>
+                            </div>
+                            <h3 class="text-xl font-black text-white mb-1">Ready to Battle?</h3>
+                            <p class="text-xs text-slate-400 mb-6 font-medium">10 Questions • Sudden Death</p>
+
+                            <div id="lobby-status" class="hidden text-xs font-bold text-primary animate-pulse mb-4 bg-primary/10 py-1 px-3 rounded-full">
+                                Searching for opponent...
+                            </div>
+                            <div id="invite-status" class="hidden text-xs font-bold text-accent animate-pulse mb-4 bg-accent/10 py-1 px-3 rounded-full"></div>
+
+                            <div class="w-full flex gap-3 mb-4">
+                                <button id="find-match-btn" class="flex-1 bg-gradient-to-r from-primary to-accent text-white font-black py-3 rounded-xl hover:opacity-90 transition-all text-sm shadow-lg shadow-primary/20">
+                                    PLAY ONLINE
+                                </button>
+                            </div>
+
+                            <div class="w-full pt-4 border-t border-surfaceLight">
+                                <div class="flex gap-2">
+                                    <input type="email" id="friend-email-input" placeholder="Friend's Email ID" class="flex-grow p-2 bg-[#13141c] border border-surfaceLight rounded-lg focus:outline-none focus:border-primary text-xs text-white">
+                                    <button id="invite-friend-btn" class="bg-surface border border-surfaceLight text-slate-300 hover:text-white hover:border-slate-500 px-3 py-2 rounded-lg text-xs font-bold transition-all">
+                                        INVITE
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="bg-surface rounded-3xl p-8 border border-surfaceLight relative overflow-hidden">
+                    <div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 blur-[100px] rounded-full pointer-events-none"></div>
+
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="border border-primary/30 bg-primary/10 text-primary text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-widest flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span> AI Powered
+                        </div>
+                    </div>
+                    <h2 class="text-3xl font-black text-white mb-2">Concept Correction</h2>
+                    <p class="text-slate-400 text-sm mb-8 max-w-2xl">Speak your answers naturally. Our Socratic AI evaluates your understanding based directly on the TN State Board syllabus and guides you to the right answer.</p>
+
+                    <div class="flex flex-wrap gap-4 mb-6">
+                        <select id="concept-subject" class="w-48 bg-[#13141c] border border-surfaceLight text-white text-sm font-bold rounded-xl p-3 focus:outline-none focus:border-primary cursor-pointer">
+                            <option value="">Subject</option>
+                            <option value="Physics">Physics</option>
+                            <option value="Chemistry">Chemistry</option>
+                            <option value="Maths">Maths</option>
+                        </select>
+                        <select id="concept-lesson" class="w-64 bg-[#13141c] border border-surfaceLight text-white text-sm font-bold rounded-xl p-3 focus:outline-none focus:border-primary disabled:opacity-50 cursor-pointer" disabled>
+                            <option value="">Select Chapter</option>
+                        </select>
+                    </div>
+
+                    <p id="concept-loading" class="text-sm text-primary font-bold animate-pulse hidden mb-4">Scanning chapter for concepts...</p>
+                    <div id="concept-buttons-container" class="flex flex-wrap gap-3 hidden mb-8"></div>
+
+                    <div id="qna-section" class="hidden flex-col gap-4 border-t border-surfaceLight pt-8 fade-in">
+                        <div id="ai-probing-questions" class="p-6 bg-[#13141c] border border-surfaceLight text-slate-300 text-sm rounded-2xl font-medium leading-relaxed shadow-inner"></div>
+                        
+                        <div id="chat-log" class="hidden flex flex-col gap-4 max-h-96 overflow-y-auto pr-2 scroll-smooth mb-4"></div>
+
+                        <div class="flex flex-col gap-3 relative">
+                            <textarea id="concept-input" placeholder="Defend your understanding or ask a question..." class="w-full h-32 p-4 bg-[#13141c] border border-surfaceLight rounded-2xl text-sm text-white focus:outline-none focus:border-primary resize-none placeholder-slate-600 transition-colors"></textarea>
+                            
+                            <div class="absolute bottom-4 right-4 flex gap-2">
+                                <button id="mic-btn" class="bg-surfaceLight hover:bg-slate-600 text-white font-bold p-3 rounded-xl transition-colors flex items-center justify-center shadow-lg group">
+                                    <span id="mic-icon" class="text-lg group-hover:scale-110 transition-transform">🎤</span>
+                                </button>
+                                <button id="submit-concept-btn" class="bg-primary hover:bg-primaryHover text-white font-black px-6 py-3 rounded-xl transition-colors text-sm shadow-lg shadow-primary/20 tracking-wider">
+                                    SEND
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </section>
+
+    <div id="game-overlay" class="fixed inset-0 bg-background/95 backdrop-blur-xl z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-surface w-full max-w-4xl rounded-[2rem] p-8 shadow-2xl border border-surfaceLight relative overflow-hidden flex flex-col h-[90vh] md:h-auto md:max-h-[90vh]">
+            
+            <div id="game-setup-ui" class="text-center py-20 flex-grow flex flex-col justify-center items-center">
+                <h2 class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent mb-4 italic tracking-tighter">MATCH FOUND!</h2>
+                <p id="opponent-name" class="text-slate-400 font-mono text-sm mb-12 tracking-widest bg-surfaceLight px-4 py-2 rounded-full border border-slate-700">CONNECTING TO PLAYER...</p>
+                <div class="text-8xl mb-12 animate-pulse drop-shadow-[0_0_30px_rgba(99,102,241,0.5)]">⚔️</div>
+                <div class="flex justify-center gap-3">
+                    <div class="w-4 h-4 bg-primary rounded-full animate-bounce shadow-lg shadow-primary/50"></div>
+                    <div class="w-4 h-4 bg-primary rounded-full animate-bounce shadow-lg shadow-primary/50 [animation-delay:0.2s]"></div>
+                    <div class="w-4 h-4 bg-primary rounded-full animate-bounce shadow-lg shadow-primary/50 [animation-delay:0.4s]"></div>
+                </div>
+            </div>
+
+            <div id="active-question-ui" class="hidden flex-grow flex flex-col h-full overflow-y-auto pr-2 custom-scrollbar"></div>
+        </div>
+    </div>
+
+    <div id="incoming-invite-modal" class="fixed top-6 right-6 bg-surface border border-surfaceLight shadow-2xl shadow-black rounded-2xl p-5 w-80 z-[110] transform translate-x-[150%] transition-transform duration-300 flex flex-col gap-3">
+        <div class="flex items-center gap-2">
+            <span class="animate-ping w-2 h-2 rounded-full bg-accent"></span>
+            <h4 class="text-xs font-black text-accent uppercase tracking-widest">Incoming Challenge</h4>
+        </div>
+        <p class="text-sm text-slate-300 leading-relaxed"><span id="inviter-id" class="font-bold text-white">Someone</span> challenged you!</p>
+        <div class="w-full bg-[#13141c] h-1.5 mt-1 rounded-full overflow-hidden border border-surfaceLight">
+            <div id="invite-timer-bar" class="bg-gradient-to-r from-primary to-accent h-full w-full transition-all duration-[60000ms] ease-linear"></div>
+        </div>
+        <div class="flex gap-2 mt-3">
+            <button id="decline-invite-btn" class="flex-1 bg-[#13141c] text-slate-400 font-bold py-2.5 rounded-xl text-xs border border-surfaceLight hover:text-white hover:bg-red-500/20 hover:border-red-500/50 transition-all">DECLINE</button>
+            <button id="accept-invite-btn" class="flex-1 bg-gradient-to-r from-primary to-accent text-white font-black py-2.5 rounded-xl text-xs shadow-lg shadow-primary/30 hover:opacity-90 transition-all">ACCEPT</button>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>

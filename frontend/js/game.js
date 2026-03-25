@@ -88,7 +88,7 @@ lobbyChapter.addEventListener('change', async (e) => {
     lobbyConcept.innerHTML = '<option value="">Scanning syllabus...</option>';
 
     try {
-        const res = await fetch('get-concepts', {
+        const res = await fetch('/get-concepts', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ui_lesson_name: lesson })
@@ -163,7 +163,7 @@ findMatchBtn.addEventListener('click', async () => {
 
 async function startMatchAsHost(chapter, concept, myEmail) {
     try {
-        const res = await fetch('generate-mcqs', {
+        const res = await fetch('/generate-mcqs', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ui_lesson_name: chapter, concept: concept })
@@ -380,7 +380,7 @@ conceptLesson.addEventListener('change', async (e) => {
     conceptLoading.classList.remove('hidden');
 
     try {
-        const res = await fetch('get-concepts', {
+        const res = await fetch('/get-concepts', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ui_lesson_name: lesson })
@@ -431,7 +431,7 @@ async function loadQuestionsForConcept(lesson, concept, clickedBtn) {
     conceptInput.value = ""; 
 
     try {
-        const res = await fetch('generate-questions', {
+        const res = await fetch('/generate-questions', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ui_lesson_name: lesson, concept: concept })
@@ -464,7 +464,7 @@ submitConceptBtn.addEventListener('click', async () => {
     chatLog.scrollTop = chatLog.scrollHeight;
 
     try {
-        const res = await fetch('evaluate-concept', {
+        const res = await fetch('/evaluate-concept', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

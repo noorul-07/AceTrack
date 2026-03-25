@@ -70,11 +70,12 @@ def get_or_upload_gemini_file(lesson_name):
 
 def generate_with_fallback_file(prompt_text, uploaded_file):
     """Heavy generation used ONLY for the initial PDF-to-Text extraction."""
+    # FIX: Using official production model names
     stable_models = [
-        "gemini-3.1-flash-lite-preview", 
-        "gemini-3-flash-preview",       
-        "gemini-3.1-pro-preview",        
-        "gemini-2.5-flash-lite"         
+        "gemini-2.5-flash",
+        "gemini-2.0-flash", 
+        "gemini-1.5-flash",        
+        "gemini-1.5-pro"         
     ]
     for model_name in stable_models:
         try:
@@ -91,25 +92,25 @@ def generate_with_fallback_file(prompt_text, uploaded_file):
 
 def generate_text_only(prompt_text):
     """BLAZING FAST generation. Used for 99% of app queries using pure cached text."""
+    # FIX: Using official production model names
     stable_models = [
-        "gemini-3.1-flash-lite-preview", 
-        "gemini-3-flash-preview",       
-        "gemini-3.1-pro-preview",        
-        "gemini-2.5-flash-lite"         
+        "gemini-2.5-flash",
+        "gemini-2.0-flash", 
+        "gemini-1.5-flash",        
+        "gemini-1.5-pro"         
     ]
     for model_name in stable_models:
         try:
             print(f"⚡ Generating purely from text using {model_name}...")
             return client.models.generate_content(
                 model=model_name, 
-                contents=[prompt_text] # Look ma, no files!
+                contents=[prompt_text]
             ).text
         except Exception as e:
             print(f"⚠️ {model_name} failed on text generation: {str(e)}") 
             time.sleep(1)
             
     raise Exception("Critical: All API quotas are fully depleted.")
-
 # ==========================================
 # 2. THE AUTOMATED ETL PIPELINE
 # ==========================================

@@ -31,7 +31,10 @@ gemini_file_cache = {}
 def serve_index():
     """Serves your index.html file when someone visits the root URL"""
     return send_from_directory(app.static_folder, 'index.html')
-
+@app.route('/<path:path>')
+def serve_static_files(path):
+    """Serves all your JS files, images (like logo.jpeg), and CSS"""
+    return send_from_directory(app.static_folder, path)
 def get_or_upload_gemini_file(lesson_name):
     """(Used only once per chapter) Uploads the raw PDF to Gemini."""
     if lesson_name in gemini_file_cache:

@@ -73,9 +73,9 @@ def generate_with_fallback_file(prompt_text, uploaded_file):
     # FIX: Using official production model names
     stable_models = [
         "gemini-2.5-flash",
-        "gemini-2.0-flash", 
-        "gemini-1.5-flash",        
-        "gemini-1.5-pro"         
+        # "gemini-2.0-flash", 
+        # "gemini-1.5-flash",        
+        # "gemini-1.5-pro"         
     ]
     for model_name in stable_models:
         try:
